@@ -114,7 +114,7 @@ def main_screen():
     tk.Label(root, text="Select Category:").grid(row=0, column=3, padx=10, pady=10)
     category_var = tk.StringVar(value="All")  # Default value
     category_combobox = ttk.Combobox(root, textvariable=category_var, state="readonly")
-    category_combobox['values'] = ["All", "Dessert", "Main Course", "Appetizer"]  # Update with your actual categories
+    category_combobox['values'] = ["All", "Dessert", "Main Course", "Appetizer"]
     category_combobox.grid(row=0, column=4, padx=10, pady=10)
     category_combobox.bind("<<ComboboxSelected>>", lambda event: refresh_recipes(recipe_listbox, recipe_map, category_var))  # Refresh on selection change
 
@@ -136,7 +136,7 @@ def main_screen():
     quit_button.grid(row=2, column=4, padx=5, pady=5, sticky="ew")
 
     # Add a Text widget for previewing recipe content
-    preview_text = tk.Text(root, wrap='word', width=50, height=15, bg="#999999")
+    preview_text = tk.Text(root, wrap='word', width=50, height=15, padx=10, pady=10, bg="#bbbbbb")
     preview_text.grid(row=1, column=2, columnspan=3, padx=10, pady=10)
 
     # Bind double-click to display recipe preview
