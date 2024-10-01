@@ -1,59 +1,86 @@
 #!/usr/bin/env python
 
 import tkinter as tk
-from tkinter import messagebox
 import os
 
-# Function to save recipe to a markdown file in the same folder as the executable
-def save_recipe():
-    recipe_name = name_entry.get().strip()
-    ingredients = ingredients_text.get("1.0", tk.END).strip()
-    instructions = instructions_text.get("1.0", tk.END).strip()
+# Function to read the configuration from the config file
+def read_config():
+    config = {}
+    with open('config.txt', 'r') as f:
+        for line in f:
+            key, value = line.strip().split(' = ')
+            config[key] = value.strip('"')  # Remove quotes if any
+    return config
 
-    if not recipe_name or not ingredients or not instructions:
-        messagebox.showwarning("Input Error", "All fields must be filled out.")
-        return
+# Load the configuration
+config = read_config()
+RECIPES_DIR = os.path.abspath(config.get('recipe_directory', './recipes'))
 
-    # Format the recipe name for the filename (lowercase, replace spaces with underscores)
-    formatted_name = recipe_name.lower().replace(" ", "_")
-    file_name = f"{formatted_name}.md"
+# Function to save the recipe in markdown format
+def save_recipe(recipe_name, ingredients, instructions):
+    filename = recipe_name.lower().replace(" ", "_") + ".md"
+    file_path = os.path.join(RECIPES_DIR, filename)
 
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(script_dir, file_name)
+    with open(file_path, 'w') as f:
+        f.write(f"# {recipe_name}\n\n## Ingredients\n")
+        f.write(ingredients + "\n\n## Instructions\n")
+        f.write(instructions)
 
-    # Create the markdown content
-    markdown_content = f"# {recipe_name}\n\n## Ingredients:\n{ingredients}\n\n## Instructions:\n{instructions}\n"
+# Function to open the recipe entry screen
+def open_recipe_entry(existing_file_path=None):
+    entry_window = tk.Toplevel()
+    entry_window.title("Recipe Entry")
 
-    try:
-        with open(file_path, 'w') as file:
-            file.write(markdown_content)
-        messagebox.showinfo("Success", f"Recipe saved successfully as {file_name}")
-    except Exception as e:
-        messagebox.showerror("File Error", f"An error occurred while saving the recipe: {e}")
+    # Labels and Entry Fields
+    tk.Label(entry_window, text="Recipe Name:").grid(row=0, column=0, padx=10, pady=10)
+    recipe_name_entry = tk.Entry(entry_window, width=40)
+    recipe_name_entry.grid(row=0, column=1, padx=10, pady=10)
 
-# Set up the tkinter window
-root = tk.Tk()
-root.title("RecipeVault - Recipe Entry")
+    tk.Label(entry_window, text="Ingredients:").grid(row=1, column=0, padx=10, pady=10)
+    ingredients_text = tk.Text(entry_window, width=40, height=10)
+    ingredients_text.grid(row=1, column=1, padx=10, pady=10)
 
-# Recipe Name Entry
-tk.Label(root, text="Recipe Name:").grid(row=0, column=0, padx=10, pady=10)
-name_entry = tk.Entry(root, width=40)
-name_entry.grid(row=0, column=1, padx=10, pady=10)
+    tk.Label(entry_window, text="Instructions:").grid(row=2, column=0, padx=10, pady=10)
+    instructions_text = tk.Text(entry_window, width=40, height=10)
+    instructions_text.grid(row=2, column=1, padx=10, pady=10)
 
-# Ingredients Entry
-tk.Label(root, text="Ingredients:").grid(row=1, column=0, padx=10, pady=10)
-ingredients_text = tk.Text(root, height=10, width=40)
-ingredients_text.grid(row=1, column=1, padx=10, pady=10)
+    # Save button
+    def save_and_exit():
+        recipe_name = recipe_name_entry.get()
+        ingredients = ingredients_text.get("1.0", tk.END).strip()
+        instructions = instructions_text.get("1.0", tk.END).strip()
 
-# Preparation Instructions Entry
-tk.Label(root, text="Instructions:").grid(row=2, column=0, padx=10, pady=10)
-instructions_text = tk.Text(root, height=10, width=40)
-instructions_text.grid(row=2, column=1, padx=10, pady=10)
+        save_recipe(recipe_name, ingredients, instructions)
+        entry_window.destroy()  # Close the entry window
 
-# Save Button
-save_button = tk.Button(root, text="Save Recipe", command=save_recipe)
-save_button.grid(row=3, column=1, padx=10, pady=10, sticky="e")
+    save_button = tk.Button(entry_window, text="Save Recipe", command=save_and_exit)
+    save_button.grid(row=3, column=1, padx=10, pady=10)
 
-# Run the tkinter loop
-root.mainloop()
+    # Cancel button
+    cancel_button = tk.Button(entry_window, text="Cancel", command=entry_window.destroy)
+    cancel_button.grid(row=3, column=0, padx=10, pady=10)
+
+    # If an existing file is passed, load its contents
+    if existing_file_path:
+        with open(existing_file_path, 'r') as f:
+            lines = f.readlines()
+            recipe_name_entry.insert(0, lines[0][2:].strip())  # Recipe Name
+            ingredients = []
+            instructions = []
+            is_ingredients = False
+            for line in lines[2:]:
+                if line.startswith("## Ingredients"):
+                    is_ingredients = False
+                    continue
+                if is_ingredients:
+                    instructions.append(line.strip())
+                else:
+                    if line.startswith("## Instructions"):
+                        is_ingredients = True
+                        continue
+                    ingredients.append(line.strip())
+
+            ingredients_text.insert(tk.END, "\n".join(ingredients))
+            instructions_text.insert(tk.END, "\n".join(instructions))
+
+    entry_window.mainloop()
