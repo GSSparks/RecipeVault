@@ -71,6 +71,32 @@ def delete_selected_recipe(recipe_listbox, recipe_map):
                 os.remove(file_path)  # Delete the file
                 refresh_recipes(recipe_listbox, recipe_map)  # Refresh the list after deletion
 
+# Function to display the recipe preview
+def display_recipe_preview(recipe_listbox, recipe_map, preview_text):
+    selected = recipe_listbox.curselection()
+    if selected:
+        title = recipe_listbox.get(selected[0])  # Get the selected title
+        filename = recipe_map.get(title)  # Get the corresponding filename
+        if filename:
+            file_path = os.path.join(RECIPES_DIR, filename)
+            with open(file_path, 'r') as f:
+                content = f.readlines()  # Read the entire file content line by line
+                preview_text.delete(1.0, tk.END)  # Clear previous content
+
+                # Initialize tags for formatting
+                preview_text.tag_configure("title", font=("Helvetica", 16, "bold"))
+                preview_text.tag_configure("subtitle", font=("Helvetica", 14, "bold"))
+                preview_text.tag_configure("normal", font=("Helvetica", 12))
+
+                for line in content:
+                    line = line.strip()
+                    if line.startswith("# "):  # Title
+                        preview_text.insert(tk.END, line[2:] + "\n", "title")  # Skip the "# "
+                    elif line.startswith("## "):  # Subtitle
+                        preview_text.insert(tk.END, line[3:] + "\n", "subtitle")  # Skip the "## "
+                    else:
+                        preview_text.insert(tk.END, line + "\n", "normal")  # Normal text
+
 # Main function for the GUI
 def main_screen():
     root = tk.Tk()
@@ -107,7 +133,14 @@ def main_screen():
     delete_button.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
 
     quit_button = tk.Button(root, text="Quit", command=root.destroy, width=button_width)
-    quit_button.grid(row=2, column=3, padx=5, pady=5, sticky="ew")
+    quit_button.grid(row=2, column=4, padx=5, pady=5, sticky="ew")
+
+    # Add a Text widget for previewing recipe content
+    preview_text = tk.Text(root, wrap='word', width=50, height=15, bg="#999999")
+    preview_text.grid(row=1, column=2, columnspan=3, padx=10, pady=10)
+
+    # Bind double-click to display recipe preview
+    recipe_listbox.bind("<Double-Button-1>", lambda event: display_recipe_preview(recipe_listbox, recipe_map, preview_text))
 
     # Refresh the listbox whenever the main window is focused
     root.bind("<FocusIn>", lambda event: refresh_recipes(recipe_listbox, recipe_map, category_var))
