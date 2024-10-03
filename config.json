@@ -2,6 +2,9 @@
     "recipe_directory":   "./recipes",
     "bg_color":           "#f0f0f0",
     "bt_color":           "#f3f3f3",
-    "bt_font":            "Helvetica"
+    "bt_font":            ["Helvetica", 10],
+    "font":               ["Helvetica", 10],
+    "button_width":       10,
+    "categories":         ["All", "Dessert", "Main Course", "Appetizer", "Snack"]
 }
 
