@@ -140,6 +140,10 @@ def main_screen():
     quit_button = tk.Button(button_frame, text="Quit", command=root.destroy, width=button_width, bg=bt_color, font=bt_font)
     quit_button.grid(row=2, column=4, padx=5, pady=5, sticky="ew")
 
+    # Add logo
+    logo_image = tk.PhotoImage(file="./images/vault.png", width=200, height=60)
+    logo = tk.Label(button_frame, image=logo_image, bg=bg_color).grid(row=2, column=5)
+
     # Add a Text widget for previewing recipe content
     preview_text = tk.Text(root, wrap='word', width=50, height=15, padx=10, pady=10, bg="#bbbbbb")
     preview_text.grid(row=1, column=2, columnspan=3, padx=10, pady=10)
