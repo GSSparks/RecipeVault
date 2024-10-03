@@ -38,7 +38,8 @@ def refresh_recipes(recipe_listbox, recipe_map, category_var):
             file_path = os.path.join(RECIPES_DIR, file)
             with open(file_path, 'r') as f:
                 title = f.readline().strip()[2:]  # Read the first line and remove the "# " prefix
-                category = f.readline().strip()[2:]  # Read the second line for the category
+                nothing = f.readline()  # FIXME Hacky way to skip a line :/
+                category = f.readline().strip()[3:]  # Read the third line for the category
 
                 # Filter recipes by category if selected
                 if category_filter is None or category == category_filter:
@@ -59,7 +60,7 @@ def add_new_recipe():
     entry.open_recipe_entry()
 
 # Function to delete a selected recipe
-def delete_selected_recipe(recipe_listbox, recipe_map):
+def delete_selected_recipe(recipe_listbox, recipe_map, category_var):
     selected = recipe_listbox.curselection()
     if selected:
         title = recipe_listbox.get(selected[0])  # Get the title
@@ -70,7 +71,7 @@ def delete_selected_recipe(recipe_listbox, recipe_map):
             # Confirm deletion
             if messagebox.askyesno("Delete Recipe", f"Are you sure you want to delete '{title}'?"):
                 os.remove(file_path)  # Delete the file
-                refresh_recipes(recipe_listbox, recipe_map)  # Refresh the list after deletion
+                refresh_recipes(recipe_listbox, recipe_map, category_var)  # Refresh the list after deletion
 
 # Function to display the recipe preview
 def display_recipe_preview(recipe_listbox, recipe_map, preview_text):
@@ -125,9 +126,6 @@ def main_screen():
     button_frame = tk.Frame(root, bg=bg_color)
     button_frame.grid(row=2, column=0, columnspan=5, pady=10)
 
-    # Set button size
-    #button_width = 10
-
     # Buttons in a grid layout
     open_button = tk.Button(button_frame, text="Open", command=lambda: open_selected_recipe(recipe_listbox, recipe_map), width=button_width, bg=bt_color, font=bt_font)
     open_button.grid(row=2, column=0, padx=5, pady=5, sticky="ew")
@@ -136,7 +134,7 @@ def main_screen():
     add_button.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
     # Delete button styled with red color
-    delete_button = tk.Button(button_frame, text="Delete", command=lambda: delete_selected_recipe(recipe_listbox, recipe_map), bg="red", fg="white", activebackground="darkred", activeforeground="white", width=button_width, font=bt_font)
+    delete_button = tk.Button(button_frame, text="Delete", command=lambda: delete_selected_recipe(recipe_listbox, recipe_map, category_var), bg="red", fg="white", activebackground="darkred", activeforeground="white", width=button_width, font=bt_font)
     delete_button.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
 
     quit_button = tk.Button(button_frame, text="Quit", command=root.destroy, width=button_width, bg=bt_color, font=bt_font)

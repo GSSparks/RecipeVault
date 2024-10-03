@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import json
 import os
 import re
@@ -29,7 +29,7 @@ def sanitize_text(text):
     return sanitized
 
 # Function to save the recipe in markdown format
-def save_recipe(recipe_name, ingredients, instructions, parent_window):
+def save_recipe(recipe_name, category, ingredients, instructions, parent_window):
     recipe_name = recipe_name.strip()
 
     # Check if the recipe name is empty
@@ -56,7 +56,7 @@ def save_recipe(recipe_name, ingredients, instructions, parent_window):
 
     # Save the recipe to the file
     with open(file_path, 'w') as f:
-        f.write(f"# {recipe_name}\n\n## Ingredients\n")
+        f.write(f"# {recipe_name}\n\n## {category}\n\n## Ingredients\n")
         f.write(sanitized_ingredients + "\n\n## Instructions\n")
         f.write(sanitized_instructions)
 
@@ -73,41 +73,49 @@ def open_recipe_entry(existing_file_path=None):
     recipe_name_entry = tk.Entry(entry_window, width=40)
     recipe_name_entry.grid(row=0, column=1, padx=10, pady=10)
 
-    #
+    # Category dropdown box
+    # Category selection
+    tk.Label(entry_window, text="Select Category:", bg=bg_color).grid(row=1, column=0, padx=10, pady=10)
+    category_var = tk.StringVar()
+    category_combobox = ttk.Combobox(entry_window, textvariable=category_var, state="readonly")
+    category_combobox['values'] = categories
+    category_combobox.grid(row=1, column=1, padx=10, pady=10)
 
-    tk.Label(entry_window, text="Ingredients:", bg=bg_color).grid(row=1, column=0, padx=10, pady=10)
+    tk.Label(entry_window, text="Ingredients:", bg=bg_color).grid(row=2, column=0, padx=10, pady=10)
     ingredients_text = tk.Text(entry_window, width=40, height=10)
-    ingredients_text.grid(row=1, column=1, padx=10, pady=10)
+    ingredients_text.grid(row=2, column=1, padx=10, pady=10)
 
-    tk.Label(entry_window, text="Instructions:", bg=bg_color).grid(row=2, column=0, padx=10, pady=10)
+    tk.Label(entry_window, text="Instructions:", bg=bg_color).grid(row=3, column=0, padx=10, pady=10)
     instructions_text = tk.Text(entry_window, width=40, height=10)
-    instructions_text.grid(row=2, column=1, padx=10, pady=10)
+    instructions_text.grid(row=3, column=1, padx=10, pady=10)
 
     # Save button
     def save_and_exit():
         recipe_name = recipe_name_entry.get()
+        category = category_combobox.get()
         ingredients = ingredients_text.get("1.0", tk.END).strip()
         instructions = instructions_text.get("1.0", tk.END).strip()
 
-        if save_recipe(recipe_name, ingredients, instructions, entry_window):
+        if save_recipe(recipe_name, category, ingredients, instructions, entry_window):
             entry_window.after(200, entry_window.destroy)  # Close the entry window
 
     save_button = tk.Button(entry_window, text="Save Recipe", bg=bt_color, command=save_and_exit)
-    save_button.grid(row=3, column=1, padx=10, pady=10)
+    save_button.grid(row=4, column=1, padx=10, pady=10)
 
     # Cancel button
     cancel_button = tk.Button(entry_window, text="Cancel", bg=bt_color, command=entry_window.destroy)
-    cancel_button.grid(row=3, column=0, padx=10, pady=10)
+    cancel_button.grid(row=4, column=0, padx=10, pady=10)
 
     # If an existing file is passed, load its contents
     if existing_file_path:
         with open(existing_file_path, 'r') as f:
             lines = f.readlines()
             recipe_name_entry.insert(0, lines[0][2:].strip())  # Recipe Name
+            category_var.set(lines[2].strip()[2:])
             ingredients = []
             instructions = []
             is_ingredients = False
-            for line in lines[2:]:
+            for line in lines[4:]:
                 if line.startswith("## Ingredients"):
                     is_ingredients = False
                     continue
