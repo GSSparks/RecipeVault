@@ -1,20 +1,24 @@
 #!/usr/bin/env python
 
 import tkinter as tk
+import json
 import os
 
 # Function to read the configuration from the config file
 def read_config():
-    config = {}
-    with open('config.txt', 'r') as f:
-        for line in f:
-            key, value = line.strip().split(' = ')
-            config[key] = value.strip('"')  # Remove quotes if any
-    return config
+    with open('config.json', 'r') as f:
+        return json.load(f)
 
 # Load the configuration
 config = read_config()
-RECIPES_DIR = os.path.abspath(config.get('recipe_directory', './recipes'))
+
+# Set variables in the local scope
+for key, value in config.items():
+    locals()[key] = value if not isinstance(value, list) else tuple(value)  # Convert lists to tuples
+
+# Ensure the recipes directory exists
+RECIPES_DIR = os.path.abspath(recipe_directory)
+os.makedirs(RECIPES_DIR, exist_ok=True)
 
 # Function to save the recipe in markdown format
 def save_recipe(recipe_name, ingredients, instructions):

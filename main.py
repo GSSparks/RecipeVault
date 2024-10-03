@@ -1,25 +1,26 @@
 #!/usr/bin/env python
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import filedialog, ttk
 import os
+import json
 import entry  # Import the entry module
 from tkinter import messagebox  # Import messagebox for confirmation dialogs
 
 # Function to read the configuration from the config file
 def read_config():
-    config = {}
-    with open('config.txt', 'r') as f:
-        for line in f:
-            key, value = line.strip().split(' = ')
-            config[key] = value.strip('"')  # Remove quotes if any
-    return config
+    with open('config.json', 'r') as f:
+        return json.load(f)
 
 # Load the configuration
 config = read_config()
-RECIPES_DIR = os.path.abspath(config.get('recipe_directory', './recipes'))
+
+# Set variables in the local scope
+for key, value in config.items():
+    locals()[key] = value if not isinstance(value, list) else tuple(value)  # Convert lists to tuples
 
 # Ensure the recipes directory exists
+RECIPES_DIR = os.path.abspath(recipe_directory)
 os.makedirs(RECIPES_DIR, exist_ok=True)
 
 # Function to refresh the recipe list in the text box based on the selected category
@@ -86,7 +87,7 @@ def display_recipe_preview(recipe_listbox, recipe_map, preview_text):
                 # Initialize tags for formatting
                 preview_text.tag_configure("title", font=("Helvetica", 16, "bold"))
                 preview_text.tag_configure("subtitle", font=("Helvetica", 14, "bold"))
-                preview_text.tag_configure("normal", font=("Helvetica", 12))
+                preview_text.tag_configure("normal", font=("Helvetica", 10))
 
                 for line in content:
                     line = line.strip()
@@ -100,18 +101,20 @@ def display_recipe_preview(recipe_listbox, recipe_map, preview_text):
 # Main function for the GUI
 def main_screen():
     root = tk.Tk()
-    root.title("RecipeVault - Main Screen")
+    root.title("RecipeVault")
+    root.configure(bg=bg_color)
+    root.resizable(False, False)
 
     # Recipe Listbox
-    tk.Label(root, text="Available Recipes:").grid(row=0, column=0, padx=10, pady=10, columnspan=2)
-    recipe_listbox = tk.Listbox(root, width=30, height=15)
-    recipe_listbox.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
+    tk.Label(root, text="Available Recipes:", bg=bg_color, font=("Helvetica", 10)).grid(row=0, column=0, columnspan=2, sticky="nsew")
+    recipe_listbox = tk.Listbox(root, bd=0, font=("Helvetica", 10), bg=bg_color, fg="#333333")
+    recipe_listbox.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
     # Recipe map to store title to filename mapping
     recipe_map = {}
 
     # Drop-down for categories
-    tk.Label(root, text="Select Category:").grid(row=0, column=3, padx=10, pady=10)
+    tk.Label(root, text="Select Category:", bg=bg_color, font=("Helvetica", 10)).grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
     category_var = tk.StringVar(value="All")  # Default value
     category_combobox = ttk.Combobox(root, textvariable=category_var, state="readonly")
     category_combobox['values'] = ["All", "Dessert", "Main Course", "Appetizer"]
@@ -122,17 +125,20 @@ def main_screen():
     button_width = 10
 
     # Buttons in a grid layout
-    open_button = tk.Button(root, text="Open", command=lambda: open_selected_recipe(recipe_listbox, recipe_map), width=button_width)
+    open_button = tk.Button(root, text="Open", command=lambda: open_selected_recipe(recipe_listbox, recipe_map), width=button_width, bg=bt_color, font=bt_font)
     open_button.grid(row=2, column=0, padx=5, pady=5, sticky="ew")
 
-    add_button = tk.Button(root, text="Add", command=add_new_recipe, width=button_width)
-    add_button.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
+    print_button = tk.Button(root, text="Print", command=lambda: print_selected_recipe(recipe_listbox, recipe_map), width=button_width, bg=bt_color, font=bt_font)
+    print_button.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
+
+    add_button = tk.Button(root, text="Add", command=add_new_recipe, width=button_width, bg=bt_color, font=bt_font)
+    add_button.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
 
     # Delete button styled with red color
-    delete_button = tk.Button(root, text="Delete", command=lambda: delete_selected_recipe(recipe_listbox, recipe_map), bg="red", fg="white", width=button_width)
-    delete_button.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
+    delete_button = tk.Button(root, text="Delete", command=lambda: delete_selected_recipe(recipe_listbox, recipe_map), bg="red", fg="white", activebackground="darkred", activeforeground="white", width=button_width, font=bt_font)
+    delete_button.grid(row=2, column=3, padx=5, pady=5, sticky="ew")
 
-    quit_button = tk.Button(root, text="Quit", command=root.destroy, width=button_width)
+    quit_button = tk.Button(root, text="Quit", command=root.destroy, width=button_width, bg=bt_color, font=bt_font)
     quit_button.grid(row=2, column=4, padx=5, pady=5, sticky="ew")
 
     # Add a Text widget for previewing recipe content
