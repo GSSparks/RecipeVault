@@ -29,13 +29,13 @@ def sanitize_text(text):
     return sanitized
 
 # Function to save the recipe in markdown format
-def save_recipe(recipe_name, ingredients, instructions):
+def save_recipe(recipe_name, ingredients, instructions, parent_window):
     recipe_name = recipe_name.strip()
 
     # Check if the recipe name is empty
     if not recipe_name:
-        messagebox.showerror("Input Error", "Recipe name cannot be empty.")
-        return  # Stop execution if the name is invalid
+        messagebox.showerror("Input Error", "Recipe name cannot be empty.", parent=parent_window)
+        return False # Stop if the name is invalid
 
     # Sanitize ingredients and instructions
     sanitized_ingredients = sanitize_text(ingredients)
@@ -43,12 +43,12 @@ def save_recipe(recipe_name, ingredients, instructions):
 
     # Validate that ingredients and instructions are not empty
     if not sanitized_ingredients:
-        messagebox.showerror("Input Error", "Ingredients cannot be empty.")
-        return  # Stop execution if ingredients are empty
+        messagebox.showerror("Input Error", "Ingredients cannot be empty.", parent=parent_window)
+        return False # Stop if ingredients are empty
 
     if not sanitized_instructions:
-        messagebox.showerror("Input Error", "Instructions cannot be empty.")
-        return  # Stop execution if instructions are empty
+        messagebox.showerror("Input Error", "Instructions cannot be empty.", parent=parent_window)
+        return False # Stop if instructions are empty
 
     # Create a valid filename and path for the recipe
     filename = recipe_name.lower().replace(" ", "_") + ".md"
@@ -59,6 +59,8 @@ def save_recipe(recipe_name, ingredients, instructions):
         f.write(f"# {recipe_name}\n\n## Ingredients\n")
         f.write(sanitized_ingredients + "\n\n## Instructions\n")
         f.write(sanitized_instructions)
+
+    return True
 
 # Function to open the recipe entry screen
 def open_recipe_entry(existing_file_path=None):
@@ -87,8 +89,8 @@ def open_recipe_entry(existing_file_path=None):
         ingredients = ingredients_text.get("1.0", tk.END).strip()
         instructions = instructions_text.get("1.0", tk.END).strip()
 
-        save_recipe(recipe_name, ingredients, instructions)
-        entry_window.destroy()  # Close the entry window
+        if save_recipe(recipe_name, ingredients, instructions, entry_window):
+            entry_window.after(200, entry_window.destroy)  # Close the entry window
 
     save_button = tk.Button(entry_window, text="Save Recipe", bg=bt_color, command=save_and_exit)
     save_button.grid(row=3, column=1, padx=10, pady=10)
