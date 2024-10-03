@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 import tkinter as tk
+from tkinter import messagebox
 import json
 import os
+import re
 
 # Function to read the configuration from the config file
 def read_config():
@@ -20,15 +22,43 @@ for key, value in config.items():
 RECIPES_DIR = os.path.abspath(recipe_directory)
 os.makedirs(RECIPES_DIR, exist_ok=True)
 
+def sanitize_text(text):
+    # Remove leading/trailing whitespace and escape potentially harmful characters
+    sanitized = text.strip()  # Trim whitespace from both ends
+    sanitized = re.sub(r'[<>]', '', sanitized)  # Remove any unwanted characters (e.g., <, >)
+    return sanitized
+
 # Function to save the recipe in markdown format
 def save_recipe(recipe_name, ingredients, instructions):
+    recipe_name = recipe_name.strip()
+
+    # Check if the recipe name is empty
+    if not recipe_name:
+        messagebox.showerror("Input Error", "Recipe name cannot be empty.")
+        return  # Stop execution if the name is invalid
+
+    # Sanitize ingredients and instructions
+    sanitized_ingredients = sanitize_text(ingredients)
+    sanitized_instructions = sanitize_text(instructions)
+
+    # Validate that ingredients and instructions are not empty
+    if not sanitized_ingredients:
+        messagebox.showerror("Input Error", "Ingredients cannot be empty.")
+        return  # Stop execution if ingredients are empty
+
+    if not sanitized_instructions:
+        messagebox.showerror("Input Error", "Instructions cannot be empty.")
+        return  # Stop execution if instructions are empty
+
+    # Create a valid filename and path for the recipe
     filename = recipe_name.lower().replace(" ", "_") + ".md"
     file_path = os.path.join(RECIPES_DIR, filename)
 
+    # Save the recipe to the file
     with open(file_path, 'w') as f:
         f.write(f"# {recipe_name}\n\n## Ingredients\n")
-        f.write(ingredients + "\n\n## Instructions\n")
-        f.write(instructions)
+        f.write(sanitized_ingredients + "\n\n## Instructions\n")
+        f.write(sanitized_instructions)
 
 # Function to open the recipe entry screen
 def open_recipe_entry(existing_file_path=None):
