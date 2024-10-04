@@ -76,8 +76,15 @@ def save_recipe(recipe_name, category, ingredients, instructions, parent_window)
 # Function to open the recipe entry screen
 def open_recipe_entry(existing_file_path=None):
     entry_window = tk.Toplevel()
-    entry_window.title("Recipe Entry")
+
+    # Set the window title based on whether an existing file is being edited or a new recipe is being entered
+    if existing_file_path:
+        entry_window.title("Edit Recipe")
+    else:
+        entry_window.title("New Recipe Entry")
+
     entry_window.configure(bg=bg_color)
+    entry_window.resizable(False, False)
 
     # Labels and Entry Fields
     tk.Label(entry_window, text="Recipe Name:", bg=bg_color).grid(row=0, column=0, padx=10, pady=10)
