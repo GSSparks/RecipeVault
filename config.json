@@ -1,11 +1,11 @@
 {
     "recipe_directory":   "./recipes",
+    "categories":         ["All", "Dessert", "Main Course", "Appetizer", "Snack"],
     "bg_color":           "#f0f0f0",
-    "bt_color":           "#f3f3f3",
-    "preview_color":      "#bbbbbb",
-    "bt_font":            ["Helvetica", 10],
     "font":               ["Helvetica", 10],
-    "button_width":       10,
-    "categories":         ["All", "Dessert", "Main Course", "Appetizer", "Snack"]
+    "preview_color":      "#bbbbbb",
+    "bt_color":           "#f3f3f3",
+    "bt_font":            ["Helvetica", 10],
+    "button_width":       10
 }
 
