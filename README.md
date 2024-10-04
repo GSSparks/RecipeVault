@@ -38,6 +38,7 @@ you can edit every entry of the recipe.
 
 **NOTE:** Recipes are sorted and saved by their name. Therefore, if
 you change the name, it in effect creates another recipe. This can be useful if you are wanting to copy
-a recipe and tweak it. However, once you save the recipe you will need to delete the one with the old name.
+a recipe and tweak it. However if you are only wanting to change the name, you will need to delete the
+one with the old name.
 ### Deleting a recipe
 To delete a recipe, simply click on the recipe and click the big red button labeled "Delete".
