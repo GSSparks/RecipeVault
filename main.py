@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+"""
+Author:         Gary Sparks
+Date written:   10/13/24
+Assignment:     SDEV140 Final Project
+Short Desc:     This is a recipe storage, organize, and retrieve program.
+                It is writen in Python using the Tkinter toolkit.
+"""
+
 import tkinter as tk
 from tkinter import filedialog, ttk
 import os
@@ -107,19 +115,21 @@ def main_screen():
     root.resizable(False, False)
 
     # Recipe Listbox
-    tk.Label(root, text="Available Recipes:", bg=bg_color, font=font).grid(row=0, column=0, columnspan=2, sticky="nsew")
-    recipe_listbox = tk.Listbox(root, bd=1, font=font, bg='#ffffff', fg="#333333")
-    recipe_listbox.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+    tk.Label(root, text="Available Recipes:", bg=bg_color, font=font).grid(row=0, column=0, columnspan=2, padx=10, sticky="w")
+    recipe_listbox = tk.Listbox(root, justify='left', borderwidth=10, selectbackground='#f0f0f0' , bd=1, font=font, bg='#ffffff', fg="#333333")
+    recipe_listbox.grid(row=1, column=0, columnspan=2, padx=10, sticky="nsew")
 
     # Recipe map to store title to filename mapping
     recipe_map = {}
 
     # Drop-down for categories
-    tk.Label(root, text="Select Category:", bg=bg_color, font=font).grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
+    category_frame = tk.Frame(root, bg=bg_color)
+    category_frame.grid(row=0, column=3, columnspan=3, padx=10, pady=10)
+    tk.Label(category_frame, text="Select Category:", bg=bg_color, font=font).grid(row=0, column=0, padx=5, sticky="nsew")
     category_var = tk.StringVar(value="All")  # Default value
-    category_combobox = ttk.Combobox(root, textvariable=category_var, state="readonly")
+    category_combobox = ttk.Combobox(category_frame, textvariable=category_var, state="readonly")
     category_combobox['values'] = categories
-    category_combobox.grid(row=0, column=3, columnspan=2, padx=10, pady=10)
+    category_combobox.grid(row=0, column=1, columnspan=2)
     category_combobox.bind("<<ComboboxSelected>>", lambda event: refresh_recipes(recipe_listbox, recipe_map, category_var))  # Refresh on selection change
 
     # Create a frame for the buttons
@@ -145,8 +155,8 @@ def main_screen():
     logo = tk.Label(button_frame, image=logo_image, bg=bg_color).grid(row=2, column=5)
 
     # Add a Text widget for previewing recipe content
-    preview_text = tk.Text(root, wrap='word', width=50, height=15, padx=10, pady=10, bg="#bbbbbb")
-    preview_text.grid(row=1, column=2, columnspan=3, padx=10, pady=10)
+    preview_text = tk.Text(root, wrap='word', width=50, height=15, padx=10, pady=10, bg=preview_color)
+    preview_text.grid(row=1, column=2, columnspan=3, padx=10)
 
     # Bind double-click to display recipe preview
     recipe_listbox.bind("<Double-Button-1>", lambda event: display_recipe_preview(recipe_listbox, recipe_map, preview_text))
