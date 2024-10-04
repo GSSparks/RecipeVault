@@ -54,6 +54,17 @@ def save_recipe(recipe_name, category, ingredients, instructions, parent_window)
     filename = recipe_name.lower().replace(" ", "_") + ".md"
     file_path = os.path.join(RECIPES_DIR, filename)
 
+    # Check if the file already exists
+    if os.path.exists(file_path):
+        # Ask the user if they want to overwrite the existing file
+        overwrite = messagebox.askyesno(
+            "Overwrite Confirmation",
+            f"The recipe '{recipe_name}' already exists. Do you want to overwrite it?",
+            parent=parent_window
+        )
+        if not overwrite:
+            return False  # Stop if the user does not want to overwrite
+
     # Save the recipe to the file
     with open(file_path, 'w') as f:
         f.write(f"# {recipe_name}\n\n## {category}\n\n## Ingredients\n")
