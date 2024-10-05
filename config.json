@@ -3,6 +3,8 @@
     "categories":         ["All", "Dessert", "Main Course", "Appetizer", "Snack"],
     "bg_color":           "#f0f0f0",
     "font":               ["Helvetica", 10],
+    "font_title":         ["Helvetica", 14, "bold"],
+    "font_subtitle":      ["Helvetica", 12, "bold"],
     "preview_color":      "#bbbbbb",
     "bt_color":           "#f3f3f3",
     "bt_font":            ["Helvetica", 10],

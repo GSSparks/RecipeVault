@@ -17,6 +17,8 @@ The `config.json` contains the following configurable variables:
 - `categories`       A list to set the categories for the recipes
 - `bg_color`         Sets the global background color of the application
 - `font`             Sets the global font for normal text
+- `font_title`       Sets the global font for title text
+- `font_subtitle`    Sets the global font for subtitle text
 - `preview_color`    Sets the background color of the preview window
 - `bt_color`         Sets the global button color of the application
 - `bt_font`          Sets the font for buttons
