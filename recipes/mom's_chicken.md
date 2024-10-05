@@ -9,4 +9,4 @@
 
 ## Instructions
 Take flour and breadcrumbs and mix together in a bowl. Place chicken in bowl and shake. ... the bowl ... not yourself.
-Take chicken and place is hot oil and fry until chicken is fully cooked. :)
+Take chicken and place in hot oil and fry until chicken is fully cooked. :)
