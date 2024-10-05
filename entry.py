@@ -87,25 +87,38 @@ def open_recipe_entry(existing_file_path=None):
     entry_window.resizable(False, False)
 
     # Labels and Entry Fields
-    tk.Label(entry_window, text="Recipe Name:", bg=bg_color).grid(row=0, column=0, padx=10, pady=10)
-    recipe_name_entry = tk.Entry(entry_window, width=40)
-    recipe_name_entry.grid(row=0, column=1, padx=10, pady=10)
+    recipe_name_frame = tk.LabelFrame(entry_window, text="Recipe Name:", bg=bg_color, font=font)
+    recipe_name_frame.grid(row=0, column=0, padx=10, pady=10)
+    recipe_name_entry = tk.Entry(recipe_name_frame, font=font, width=50)
+    recipe_name_entry.grid(padx=10, pady=10)
 
     # Category dropdown box
-    # Category selection
-    tk.Label(entry_window, text="Select Category:", bg=bg_color).grid(row=1, column=0, padx=10, pady=10)
-    category_var = tk.StringVar()
-    category_combobox = ttk.Combobox(entry_window, textvariable=category_var, state="readonly")
+    category_frame = tk.Frame(entry_window, bg=bg_color)
+    category_frame.grid(row=3, column=0, sticky="e", padx=10)
+    tk.Label(category_frame, text="Select Category:", bg=bg_color, font=font).grid(row=0, column=0, padx=10, pady=10)
+    category_var = tk.StringVar(value="All")  # Set default value to All
+    category_combobox = ttk.Combobox(category_frame, textvariable=category_var, font=font, state="readonly")
     category_combobox['values'] = categories
-    category_combobox.grid(row=1, column=1, padx=10, pady=10)
+    category_combobox.grid(row=0, column=1)
 
-    tk.Label(entry_window, text="Ingredients:", bg=bg_color).grid(row=2, column=0, padx=10, pady=10)
-    ingredients_text = tk.Text(entry_window, width=40, height=10)
-    ingredients_text.grid(row=2, column=1, padx=10, pady=10)
+    # Ingredients Frame
+    ingredients_frame = tk.LabelFrame(entry_window, text="Ingredients", bg=bg_color, font=font)
+    ingredients_frame.grid(row=1, column=0)
 
-    tk.Label(entry_window, text="Instructions:", bg=bg_color).grid(row=3, column=0, padx=10, pady=10)
-    instructions_text = tk.Text(entry_window, width=40, height=10)
-    instructions_text.grid(row=3, column=1, padx=10, pady=10)
+    ingredients_text = tk.Text(ingredients_frame, width=50, height=10, font=font, wrap="word", spacing1=5, spacing2=2, spacing3=5)
+    ingredients_text.grid(padx=10, pady=20)
+
+    # Instructions Frame
+    instructions_frame = tk.LabelFrame(entry_window, bg=bg_color, text="Instructions", font=font)
+    instructions_frame.grid(row=2, column=0, pady=10)
+
+    instructions_text = tk.Text(instructions_frame, width=50, height=10, font=font, wrap="word", spacing1=5, spacing2=2, spacing3=5)
+    instructions_text.grid(padx=10, pady=20)
+
+
+    # Button frame
+    button_frame = tk.Frame(entry_window, bg=bg_color)
+    button_frame.grid(row=4, column=0)
 
     # Save button
     def save_and_exit():
@@ -117,12 +130,12 @@ def open_recipe_entry(existing_file_path=None):
         if save_recipe(recipe_name, category, ingredients, instructions, entry_window):
             entry_window.after(200, entry_window.destroy)  # Close the entry window
 
-    save_button = tk.Button(entry_window, text="Save Recipe", bg=bt_color, command=save_and_exit)
-    save_button.grid(row=4, column=1, padx=10, pady=10)
+    save_button = tk.Button(button_frame, text="Save Recipe", bg=bt_color, font=bt_font, width=button_width, command=save_and_exit)
+    save_button.grid(row=0, column=0, padx=10, pady=10)
 
     # Cancel button
-    cancel_button = tk.Button(entry_window, text="Cancel", bg=bt_color, command=entry_window.destroy)
-    cancel_button.grid(row=4, column=0, padx=10, pady=10)
+    cancel_button = tk.Button(button_frame, text="Cancel", bg=bt_color, font=bt_font, width=button_width, command=entry_window.destroy)
+    cancel_button.grid(row=0, column=1, padx=10, pady=10)
 
     # If an existing file is passed, load its contents
     if existing_file_path:
