@@ -10,8 +10,8 @@ Short Desc:     This is a recipe storage, organize, and retrieve program.
 
 import tkinter as tk
 from tkinter import filedialog, ttk
-import os
-import json
+import os  # Import os for file specific tasks
+import json  # Import json to read the configuration
 import entry  # Import the entry module
 from tkinter import messagebox  # Import messagebox for confirmation dialogs
 
@@ -94,18 +94,19 @@ def display_recipe_preview(recipe_listbox, recipe_map, preview_text):
                 preview_text.delete(1.0, tk.END)  # Clear previous content
 
                 # Initialize tags for formatting
-                preview_text.tag_configure("title", font=("Helvetica", 16, "bold"))
-                preview_text.tag_configure("subtitle", font=("Helvetica", 14, "bold"))
+                preview_text.tag_configure("title", font=font_title)
+                preview_text.tag_configure("subtitle", font=font_subtitle)
                 preview_text.tag_configure("normal", font=font)
 
                 for line in content:
-                    line = line.strip()
-                    if line.startswith("# "):  # Title
-                        preview_text.insert(tk.END, line[2:] + "\n", "title")  # Skip the "# "
-                    elif line.startswith("## "):  # Subtitle
-                        preview_text.insert(tk.END, line[3:] + "\n", "subtitle")  # Skip the "## "
-                    else:
-                        preview_text.insert(tk.END, line + "\n", "normal")  # Normal text
+                    line = line.strip()  # Remove any surrounding whitespace
+                    if line:  # Check if the line is not empty
+                        if line.startswith("# "):  # Title
+                            preview_text.insert(tk.END, line[2:] + "\n", "title")  # Skip the "# "
+                        elif line.startswith("## "):  # Subtitle
+                            preview_text.insert(tk.END, line[3:] + "\n", "subtitle")  # Skip the "## "
+                        else:
+                            preview_text.insert(tk.END, line + "\n", "normal")  # Normal text
 
 # Main function for the GUI
 def main_screen():
@@ -155,7 +156,7 @@ def main_screen():
     logo = tk.Label(button_frame, image=logo_image, bg=bg_color).grid(row=2, column=5)
 
     # Add a Text widget for previewing recipe content
-    preview_text = tk.Text(root, wrap='word', width=50, height=15, padx=10, pady=10, bg=preview_color)
+    preview_text = tk.Text(root, wrap='word', width=50, height=15, padx=10, pady=10, bg=preview_color, spacing1=3, spacing2=2, spacing3=3)
     preview_text.grid(row=1, column=2, columnspan=3, padx=10)
 
     # Bind double-click to display recipe preview
