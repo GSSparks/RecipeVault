@@ -124,6 +124,7 @@ def open_recipe_entry(existing_file_path=None):
     def save_and_exit():
         recipe_name = recipe_name_entry.get()
         category = category_combobox.get()
+        print(category)
         ingredients = ingredients_text.get("1.0", tk.END).strip()
         instructions = instructions_text.get("1.0", tk.END).strip()
 
@@ -142,7 +143,7 @@ def open_recipe_entry(existing_file_path=None):
         with open(existing_file_path, 'r') as f:
             lines = f.readlines()
             recipe_name_entry.insert(0, lines[0][2:].strip())  # Recipe Name
-            category_var.set(lines[2].strip()[2:])
+            category_var.set(lines[2][2:].strip())
             ingredients = []
             instructions = []
             is_ingredients = False
