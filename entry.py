@@ -88,8 +88,8 @@ def open_recipe_entry(existing_file_path=None):
 
     # Labels and Entry Fields
     recipe_name_frame = tk.LabelFrame(entry_window, text="Recipe Name:", bg=bg_color, font=font)
-    recipe_name_frame.grid(row=0, column=0, padx=10, pady=10)
-    recipe_name_entry = tk.Entry(recipe_name_frame, font=font, width=50)
+    recipe_name_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsw")
+    recipe_name_entry = tk.Entry(recipe_name_frame, width=49, font=font_title)
     recipe_name_entry.grid(padx=10, pady=10)
 
     # Category dropdown box
@@ -103,18 +103,17 @@ def open_recipe_entry(existing_file_path=None):
 
     # Ingredients Frame
     ingredients_frame = tk.LabelFrame(entry_window, text="Ingredients", bg=bg_color, font=font)
-    ingredients_frame.grid(row=1, column=0)
+    ingredients_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
-    ingredients_text = tk.Text(ingredients_frame, width=50, height=10, font=font, wrap="word", spacing1=5, spacing2=2, spacing3=5)
+    ingredients_text = tk.Text(ingredients_frame, width=70, height=7, font=font, wrap="word", spacing1=5, spacing2=2, spacing3=5)
     ingredients_text.grid(padx=10, pady=20)
 
     # Instructions Frame
     instructions_frame = tk.LabelFrame(entry_window, bg=bg_color, text="Instructions", font=font)
-    instructions_frame.grid(row=2, column=0, pady=10)
+    instructions_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
-    instructions_text = tk.Text(instructions_frame, width=50, height=10, font=font, wrap="word", spacing1=5, spacing2=2, spacing3=5)
+    instructions_text = tk.Text(instructions_frame, width=70, height=7, font=font, wrap="word", spacing1=5, spacing2=2, spacing3=5)
     instructions_text.grid(padx=10, pady=20)
-
 
     # Button frame
     button_frame = tk.Frame(entry_window, bg=bg_color)
