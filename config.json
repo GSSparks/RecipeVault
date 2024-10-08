@@ -8,6 +8,7 @@
     "preview_color":      "#bbbbbb",
     "bt_color":           "#f3f3f3",
     "bt_font":            ["Helvetica", 10],
-    "button_width":       10
+    "button_width":       10,
+    "button_height":      2
 }
 

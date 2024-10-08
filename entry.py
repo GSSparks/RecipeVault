@@ -25,7 +25,7 @@ os.makedirs(RECIPES_DIR, exist_ok=True)
 def sanitize_text(text):
     # Remove leading/trailing whitespace and escape potentially harmful characters
     sanitized = text.strip()  # Trim whitespace from both ends
-    sanitized = re.sub(r'[<>]', '', sanitized)  # Remove any unwanted characters (e.g., <, >)
+    sanitized = re.sub(r'<[^>]+>', '', sanitized)  # Remove any unwanted characters (e.g., <, >)
     return sanitized
 
 # Function to save the recipe in markdown format
@@ -78,10 +78,15 @@ def open_recipe_entry(existing_file_path=None):
     entry_window = tk.Toplevel()
 
     # Set the window title based on whether an existing file is being edited or a new recipe is being entered
+    # And set the image and the alternative text to use for the window
     if existing_file_path:
         entry_window.title("Edit Recipe")
+        image = "./images/recipe_edit.png"
+        alt_text = "Edit Recipe"
     else:
         entry_window.title("New Recipe Entry")
+        image = "./images/recipe_add.png"
+        alt_text = "Add Recipe"
 
     entry_window.configure(bg=bg_color)
     entry_window.resizable(False, False)
@@ -117,7 +122,14 @@ def open_recipe_entry(existing_file_path=None):
 
     # Button frame
     button_frame = tk.Frame(entry_window, bg=bg_color)
-    button_frame.grid(row=4, column=0)
+    button_frame.grid(row=4, column=0, sticky='nsw')
+
+    # Add logo or alternative text
+    try:
+        logo_image = tk.PhotoImage(file=image, width=200, height=60)
+        logo = tk.Label(button_frame, image=logo_image, bg=bg_color).grid(row=0, column=0)
+    except tk.TclError:
+        log = tk.Label(button_frame, text=alt_text, bg=bg_color, font=font_title, padx=30).grid(row=0, column=0)
 
     # Save button
     def save_and_exit():
@@ -130,12 +142,12 @@ def open_recipe_entry(existing_file_path=None):
         if save_recipe(recipe_name, category, ingredients, instructions, entry_window):
             entry_window.after(200, entry_window.destroy)  # Close the entry window
 
-    save_button = tk.Button(button_frame, text="Save Recipe", bg=bt_color, font=bt_font, width=button_width, command=save_and_exit)
-    save_button.grid(row=0, column=0, padx=10, pady=10)
+    save_button = tk.Button(button_frame, text="Save Recipe", bg=bt_color, font=bt_font, height=button_height, width=button_width, command=save_and_exit)
+    save_button.grid(row=0, column=2, padx=10, pady=5, sticky="e")
 
     # Cancel button
-    cancel_button = tk.Button(button_frame, text="Cancel", bg=bt_color, font=bt_font, width=button_width, command=entry_window.destroy)
-    cancel_button.grid(row=0, column=1, padx=10, pady=10)
+    cancel_button = tk.Button(button_frame, text="Cancel", bg=bt_color, font=bt_font, height=button_height, width=button_width, command=entry_window.destroy)
+    cancel_button.grid(row=0, column=3, padx=10, pady=5, sticky="e")
 
     # If an existing file is passed, load its contents
     if existing_file_path:

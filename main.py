@@ -138,22 +138,25 @@ def main_screen():
     button_frame.grid(row=2, column=0, columnspan=5, pady=10)
 
     # Buttons in a grid layout
-    open_button = tk.Button(button_frame, text="Open", command=lambda: open_selected_recipe(recipe_listbox, recipe_map), width=button_width, bg=bt_color, font=bt_font)
+    open_button = tk.Button(button_frame, text="Open", command=lambda: open_selected_recipe(recipe_listbox, recipe_map), height=button_height, width=button_width, bg=bt_color, font=bt_font)
     open_button.grid(row=2, column=0, padx=5, pady=5, sticky="ew")
 
-    add_button = tk.Button(button_frame, text="Add", command=add_new_recipe, width=button_width, bg=bt_color, font=bt_font)
+    add_button = tk.Button(button_frame, text="Add", command=add_new_recipe, height=button_height, width=button_width, bg=bt_color, font=bt_font)
     add_button.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
     # Delete button styled with red color
-    delete_button = tk.Button(button_frame, text="Delete", command=lambda: delete_selected_recipe(recipe_listbox, recipe_map, category_var), bg="red", fg="white", activebackground="darkred", activeforeground="white", width=button_width, font=bt_font)
+    delete_button = tk.Button(button_frame, text="Delete", command=lambda: delete_selected_recipe(recipe_listbox, recipe_map, category_var), bg="red", fg="white", activebackground="darkred", activeforeground="white", height=button_height, width=button_width, font=bt_font)
     delete_button.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
 
-    quit_button = tk.Button(button_frame, text="Quit", command=root.destroy, width=button_width, bg=bt_color, font=bt_font)
+    quit_button = tk.Button(button_frame, text="Quit", command=root.destroy, height=button_height, width=button_width, bg=bt_color, font=bt_font)
     quit_button.grid(row=2, column=4, padx=5, pady=5, sticky="ew")
 
-    # Add logo
-    logo_image = tk.PhotoImage(file="./images/vault.png", width=200, height=60)
-    logo = tk.Label(button_frame, image=logo_image, bg=bg_color).grid(row=2, column=5)
+    # Add logo or alternative text
+    try:
+        logo_image = tk.PhotoImage(file="./images/vault.png", width=200, height=60)
+        logo = tk.Label(button_frame, image=logo_image, bg=bg_color).grid(row=2, column=5)
+    except tk.TclError:
+        log = tk.Label(button_frame, text="RecipeVault", bg=bg_color, font=font_title).grid(row=2, column=5)
 
     # Add a Text widget for previewing recipe content
     preview_text = tk.Text(root, wrap='word', width=50, height=15, padx=10, pady=10, bg=preview_color, spacing1=3, spacing2=2, spacing3=3)
