@@ -32,16 +32,16 @@ def sanitize_text(text):
 def save_recipe(recipe_name, category, ingredients, instructions, parent_window):
     recipe_name = recipe_name.strip()
 
-    # Check if the recipe name is empty
-    if not recipe_name:
-        messagebox.showerror("Input Error", "Recipe name cannot be empty.", parent=parent_window)
-        return False # Stop if the name is invalid
-
-    # Sanitize ingredients and instructions
+    # Sanitize name, ingredients, and instructions
+    sanitized_recipe_name = sanitize_text(recipe_name)
     sanitized_ingredients = sanitize_text(ingredients)
     sanitized_instructions = sanitize_text(instructions)
 
-    # Validate that ingredients and instructions are not empty
+    # Validate that recipe_name, ingredients, and instructions are not empty
+    if not sanitized_recipe_name:
+        messagebox.showerror("Input Error", "Recipe name cannot be empty.", parent=parent_window)
+        return False # Stop if the name is invalid
+
     if not sanitized_ingredients:
         messagebox.showerror("Input Error", "Ingredients cannot be empty.", parent=parent_window)
         return False # Stop if ingredients are empty
@@ -51,7 +51,7 @@ def save_recipe(recipe_name, category, ingredients, instructions, parent_window)
         return False # Stop if instructions are empty
 
     # Create a valid filename and path for the recipe
-    filename = recipe_name.lower().replace(" ", "_") + ".md"
+    filename = sanitized_recipe_name.lower().replace(" ", "_") + ".md"
     file_path = os.path.join(RECIPES_DIR, filename)
 
     # Check if the file already exists
@@ -59,7 +59,7 @@ def save_recipe(recipe_name, category, ingredients, instructions, parent_window)
         # Ask the user if they want to overwrite the existing file
         overwrite = messagebox.askyesno(
             "Overwrite Confirmation",
-            f"The recipe '{recipe_name}' already exists. Do you want to overwrite it?",
+            f"The recipe '{sanitized_recipe_name}' already exists. Do you want to overwrite it?",
             parent=parent_window
         )
         if not overwrite:
@@ -67,7 +67,7 @@ def save_recipe(recipe_name, category, ingredients, instructions, parent_window)
 
     # Save the recipe to the file
     with open(file_path, 'w') as f:
-        f.write(f"# {recipe_name}\n\n## {category}\n\n## Ingredients\n")
+        f.write(f"# {sanitized_recipe_name}\n\n## {category}\n\n## Ingredients\n")
         f.write(sanitized_ingredients + "\n\n## Instructions\n")
         f.write(sanitized_instructions)
 
@@ -135,7 +135,6 @@ def open_recipe_entry(existing_file_path=None):
     def save_and_exit():
         recipe_name = recipe_name_entry.get()
         category = category_combobox.get()
-        print(category)
         ingredients = ingredients_text.get("1.0", tk.END).strip()
         instructions = instructions_text.get("1.0", tk.END).strip()
 
