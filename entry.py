@@ -23,9 +23,9 @@ RECIPES_DIR = os.path.abspath(recipe_directory)
 os.makedirs(RECIPES_DIR, exist_ok=True)
 
 def sanitize_text(text):
-    # Remove leading/trailing whitespace and escape potentially harmful characters
-    sanitized = text.strip()  # Trim whitespace from both ends
-    sanitized = re.sub(r'<[^>]+>', '', sanitized)  # Remove any unwanted characters (e.g., <, >)
+    # Remove leading/trailing whitespace and remove potentially harmful characters
+    rx = re.compile(r"[^a-zA-Z0-9,!.'\s]+")
+    sanitized = rx.sub(' ', text).strip()
     return sanitized
 
 # Function to save the recipe in markdown format
